@@ -1,0 +1,8 @@
+spring:
+  autoconfigure:
+    exclude: "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration"
+  datasource:
+    - url: "jdbc:postgresql://localhost:5432/emergency_notifications_db"
+    - driver-class-name: "org.postgresql.Driver"
+    - username: "postgres"
+    - password: "123"
