@@ -4,3 +4,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123
+
+business:
+  message: Hey!\nThis message is forwarded from Emergency Notification System. Please call me back.

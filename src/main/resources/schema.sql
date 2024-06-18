@@ -1,8 +1,4 @@
-CREATE DATABASE emergency_notifications_db;
-
-\c emergency_notifications_db;
-
-CREATE TABLE caller (
+CREATE TABLE IF NOT EXISTS caller (
 id BIGSERIAL PRIMARY KEY,
 username VARCHAR UNIQUE NOT NULL,
 password VARCHAR NOT NULL,
@@ -11,17 +7,17 @@ message VARCHAR NOT NULL DEFAULT 'Hey!\nThis message is forwarded from Emergency
 image VARCHAR
 );
 
-CREATE TABLE caller2receiver_binding (
+CREATE TABLE IF NOT EXISTS caller2receiver_binding (
 id BIGSERIAL PRIMARY KEY,
-caller_id BIGINT NOT NULL REFERENCES caller(id),
+caller_id BIGINT NOT NULL REFERENCES caller(id) ON DELETE CASCADE ON UPDATE CASCADE,
 receiver VARCHAR NOT NULL,
 service VARCHAR NOT NULL,
 service_link VARCHAR NOT NULL
 );
 
-CREATE TABLE emergency_calls (
+CREATE TABLE IF NOT EXISTS emergency_calls (
 id BIGSERIAL PRIMARY KEY,
-binding_id BIGINT NOT NULL REFERENCES caller2receiver_binding(id),
+binding_id BIGINT NOT NULL REFERENCES caller2receiver_binding(id) ON DELETE NO ACTION ON UPDATE CASCADE,
 date_called TIMESTAMP NOT NULL,
 date_received TIMESTAMP
 );
