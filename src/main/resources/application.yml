@@ -1,9 +1,18 @@
 spring:
+
   datasource:
     url: jdbc:postgresql://localhost:5432/emergency_notifications_db
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  flyway:
+    enabled: true
 
 business:
   message: Hey!\nThis message is forwarded from Emergency Notification System. Please call me back.

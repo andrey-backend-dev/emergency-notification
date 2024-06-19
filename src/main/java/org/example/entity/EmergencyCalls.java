@@ -1,9 +1,6 @@
 package org.example.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +12,8 @@ import java.time.LocalDateTime;
 @Table(name = "Emergency_Calls")
 public class EmergencyCalls {
     @Id
+    @SequenceGenerator(name = "emergency_id_seq", sequenceName = "emergency_id_seq", initialValue = 7, allocationSize = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emergency_id_seq")
     private long id;
     @ManyToOne
     private Caller2ReceiverBinding binding;
