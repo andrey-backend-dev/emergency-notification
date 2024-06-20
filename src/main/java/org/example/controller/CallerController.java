@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import org.example.dto.request.CallerCreateDto;
 import org.example.dto.request.CallerUpdateDto;
 import org.example.dto.response.CallerResponseDTO;
@@ -22,19 +23,24 @@ public class CallerController {
         return service.create(dto);
     }
 
-    @GetMapping(value = "{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/id/{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public CallerResponseDTO findById(@PathVariable("id") long id) {
         return service.findById(id);
     }
 
-    @PatchMapping(value = "{id}/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CallerResponseDTO updateById(@PathVariable("id") long id, @RequestBody CallerUpdateDto dto) {
-        return service.updateById(id, dto);
+    @GetMapping(value = "{username}/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CallerResponseDTO findByUsername(@PathVariable("username") String username) {
+        return service.findByUsername(username);
     }
 
-    @DeleteMapping(value = "{id}/")
-    public ResponseEntity<?> deleteById(@PathVariable("id") long id) {
-        service.deleteById(id);
+    @PatchMapping(value = "{username}/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CallerResponseDTO updateByUsername(@PathVariable("username") String username, @RequestBody CallerUpdateDto dto) {
+        return service.updateByUsername(username, dto);
+    }
+
+    @DeleteMapping(value = "{username}/")
+    public ResponseEntity<?> deleteByUsername(@PathVariable("username") String username) {
+        service.deleteByUsername(username);
         return ResponseEntity.ok("Caller deleted.");
     }
 }
