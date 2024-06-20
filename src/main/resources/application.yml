@@ -1,4 +1,13 @@
 spring:
+  mail:
+    test-connection: true
+    protocol: smtps
+    host: smtp.yandex.ru
+    port: 465
+    username: usedreamless@yandex.ru
+    password: hnbngpfvxqxnxyxn
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/emergency_notifications_db
@@ -15,4 +24,7 @@ spring:
     enabled: true
 
 business:
-  message: Hey!\nThis message is forwarded from Emergency Notification System. Please call me back.
+  message: 'Dear, %s!<br><br>This message is forwarded from Emergency Notification System.<br>Please contact with %s by email: %s'
+  telegram-username-regex: ^@[a-zA-Z0-9]+$
+  email-regex: ^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+$
+  mail-subject: '[ENS] Emergency Call From'
