@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,7 +19,11 @@ public class Caller {
     private String email;
     private String message;
     private String image;
-    @OneToMany
-    @JoinColumn(name = "caller_id")
-    private List<Caller2ReceiverBinding> bindings;
+    @OneToMany(mappedBy = "caller")
+    private Set<Caller2ReceiverBinding> bindings;
+    @ManyToMany
+    @JoinTable(name = "callertorole",
+    joinColumns = @JoinColumn(name = "caller_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_name"))
+    private Set<Role> roles;
 }

@@ -19,4 +19,9 @@ public class EmergencyCalls {
     private Caller2ReceiverBinding binding;
     private LocalDateTime dateCalled;
     private LocalDateTime dateReceived;
+
+    public EmergencyCalls(Caller2ReceiverBinding binding, LocalDateTime dateCalled) {
+        this.binding = binding;
+        this.dateCalled = dateCalled;
+    }
 }
