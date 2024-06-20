@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 public class CallerServiceImpl implements CallerService {
     private final CallerRepository repository;
     private final CallerMapper mapper;
-    @Value("${business.message}")
-    private String defaultMessage;
 
     public CallerServiceImpl(CallerRepository repository, CallerMapper mapper) {
         this.repository = repository;
@@ -28,7 +26,7 @@ public class CallerServiceImpl implements CallerService {
     @Transactional
     public CallerResponseDTO create(CallerCreateDto dto) {
         Caller caller = new CallerBuilder(dto.getUsername(), dto.getPassword(), dto.getEmail())
-                .message(dto.getMessage() == null ? defaultMessage : dto.getMessage())
+                .message(dto.getMessage())
                 .image(dto.getImage())
                 .build();
 
@@ -48,9 +46,18 @@ public class CallerServiceImpl implements CallerService {
 
     @Override
     @Transactional
-    public CallerResponseDTO updateById(long id, CallerUpdateDto dto) {
-        Caller caller = repository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("The user with id " + id + " does not exist.")
+    public CallerResponseDTO findByUsername(String username) {
+        Caller caller = repository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The user with username " + username + " does not exist.")
+        );
+        return mapper.callerToCallerDto(caller);
+    }
+
+    @Override
+    @Transactional
+    public CallerResponseDTO updateByUsername(String username, CallerUpdateDto dto) {
+        Caller caller = repository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The user with username " + username + " does not exist.")
         );
 
         if (dto.getPassword() != null)
@@ -67,7 +74,7 @@ public class CallerServiceImpl implements CallerService {
 
     @Override
     @Transactional
-    public void deleteById(long id) {
-        repository.deleteById(id);
+    public void deleteByUsername(String username) {
+        repository.deleteByUsername(username);
     }
 }
