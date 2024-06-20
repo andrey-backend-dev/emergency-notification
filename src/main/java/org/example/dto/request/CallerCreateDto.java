@@ -1,6 +1,6 @@
 package org.example.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -8,11 +8,11 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 public class CallerCreateDto {
-    @NotNull
+    @NotBlank(message = "Username is mandatory")
     private String username;
-    @NotNull
+    @NotBlank(message = "Password is mandatory")
     private String password;
-    @NotNull
+    @NotBlank(message = "Email is mandatory")
     private String email;
     private String message;
     private String image;
