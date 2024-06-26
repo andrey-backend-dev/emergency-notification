@@ -24,7 +24,17 @@ spring:
     enabled: true
 
 business:
-  message: 'Dear, %s!<br><br>This message is forwarded from Emergency Notification System.<br>Please contact with %s by email: %s'
+  message: "Уважаемый (ая), %s!<br><br>Это сообщение доставлено системой экстренных уведомлений [ENS].<br>Пожалуйста, свяжитесь с %s."
   telegram-username-regex: ^@[a-zA-Z0-9]+$
   email-regex: ^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+$
   mail-subject: '[ENS] Emergency Call From'
+
+bot:
+  name: ens_ru_bot
+  token: 7243457701:AAHTRCWwVeKGWFRG_SIpdN55GLX5kfnabZQ
+  msg:
+    start: "Здравствуйте, это Телеграм Бот по отправке экстренных сообщений!\n
+    Добавляя этого бота, Вы получаете возможность получать экстренные уведомления от пользователей, которые указали Вас получателем."
+    accept: "Отныне Вы — участник ENS, поздравляем!\nТеперь Вы точно ничего не пропустите!"
+    deny: "Имейте в виду, что сообщения от пользователей, которые указали Вас в качестве получателя, не дойдут до Вас, 
+    пока Вы не станете участником ENS.\nЕсли захотите изменить свое решение, просто нажмите на кнопку 'Хочу быть участником ENS!'"

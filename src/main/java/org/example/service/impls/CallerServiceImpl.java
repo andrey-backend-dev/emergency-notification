@@ -9,7 +9,6 @@ import org.example.repository.CallerRepository;
 import org.example.service.CallerService;
 import org.example.util.builders.CallerBuilder;
 import org.example.util.mappers.CallerMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
