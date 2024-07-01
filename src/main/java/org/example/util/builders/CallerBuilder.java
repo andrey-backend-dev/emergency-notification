@@ -1,6 +1,9 @@
 package org.example.util.builders;
 
 import org.example.entity.Caller;
+import org.example.entity.Role;
+
+import java.util.Set;
 
 public class CallerBuilder {
     private final String username;
@@ -8,6 +11,7 @@ public class CallerBuilder {
     private final String email;
     private String message;
     private String image;
+    private Set<Role> roles;
 
     public CallerBuilder(String username, String password, String email) {
         this.username = username;
@@ -25,6 +29,11 @@ public class CallerBuilder {
         return this;
     }
 
+    public CallerBuilder roles(Set<Role> roles) {
+        this.roles = roles;
+        return this;
+    }
+
     public Caller build() {
         Caller caller = new Caller();
         caller.setUsername(username);
@@ -32,6 +41,7 @@ public class CallerBuilder {
         caller.setEmail(email);
         caller.setMessage(message);
         caller.setImage(image);
+        caller.setRoles(roles);
         return caller;
     }
 }

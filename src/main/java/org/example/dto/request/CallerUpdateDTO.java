@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class CallerUpdateDto {
+public class CallerUpdateDTO {
     private String password;
     private String email;
     private String message;

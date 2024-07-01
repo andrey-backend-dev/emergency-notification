@@ -23,9 +23,9 @@ public class Receiver {
     @JoinColumn(name = "telegram_id")
     private TelegramUser telegramUser;
 
-    public Receiver(Caller caller, String receiver, String email, TelegramUser telegramUser) {
+    public Receiver(Caller caller, String name, String email, TelegramUser telegramUser) {
         this.caller = caller;
-        this.name = receiver;
+        this.name = name;
         this.email = email;
         this.telegramUser = telegramUser;
     }

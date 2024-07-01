@@ -1,29 +1,33 @@
 package org.example.controller;
 
-import jakarta.validation.Valid;
-import org.example.dto.request.CallerCreateDto;
-import org.example.dto.request.CallerUpdateDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.example.dto.request.CallerCreateDTO;
+import org.example.dto.request.CallerUpdateDTO;
 import org.example.dto.response.CallerResponseDTO;
+import org.example.service.AuthenticationService;
 import org.example.service.CallerService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.ValidationException;
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/callers/")
+@RequiredArgsConstructor
 public class CallerController {
     private final CallerService service;
-
-    public CallerController(CallerService service) {
-        this.service = service;
-    }
+    private final AuthenticationService authenticationService;
 
     @PostMapping(value = "create/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CallerResponseDTO create(@RequestBody CallerCreateDto dto) {
+    public CallerResponseDTO create(@RequestBody CallerCreateDTO dto) throws ValidationException {
         return service.create(dto);
     }
 
-    @GetMapping(value = "/id/{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "id/{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public CallerResponseDTO findById(@PathVariable("id") long id) {
         return service.findById(id);
     }
@@ -33,9 +37,26 @@ public class CallerController {
         return service.findByUsername(username);
     }
 
+    @GetMapping(value = "me/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CallerResponseDTO findByPrincipal(Principal principal) {
+        return service.findByUsername(principal.getName());
+    }
+
     @PatchMapping(value = "{username}/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CallerResponseDTO updateByUsername(@PathVariable("username") String username, @RequestBody CallerUpdateDto dto) {
+    public CallerResponseDTO updateByUsername(@PathVariable("username") String username, @RequestBody CallerUpdateDTO dto) {
         return service.updateByUsername(username, dto);
+    }
+
+    @PatchMapping(value = "me/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CallerResponseDTO updateByPrincipal(Principal principal, @RequestBody CallerUpdateDTO dto) {
+        return service.updateByUsername(principal.getName(), dto);
+    }
+
+    @DeleteMapping(value = "me/")
+    public ResponseEntity<?> deleteByPrincipal(Principal principal, HttpServletRequest request, HttpServletResponse response) {
+        service.deleteByUsername(principal.getName());
+        authenticationService.logout(request, response);
+        return ResponseEntity.ok("Caller deleted.");
     }
 
     @DeleteMapping(value = "{username}/")

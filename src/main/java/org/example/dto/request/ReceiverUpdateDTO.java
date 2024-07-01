@@ -1,6 +1,6 @@
 package org.example.dto.request;
 
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class ReceiverUpdateDTO {
-    @Positive(message = "Id must be more than zero.")
-    private long callerId;
+    @NotBlank(message = "Name is mandatory.")
     private String name;
+    private String newName;
     private String email;
     private String telegramUsername;
 }

@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @ToString
 @AllArgsConstructor
-public class CallerCreateDto {
+public class CallerCreateDTO {
     @NotBlank(message = "Username is mandatory")
     private String username;
     @NotBlank(message = "Password is mandatory")

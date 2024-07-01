@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -18,8 +19,8 @@ public class EmergencyCallController {
         this.service = service;
     }
 
-    @PostMapping(path = "call/{id}/", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<EmergencyCallDTO> makeEmergencyCalls(@PathVariable("id") long callerId) throws MessagingException, TelegramApiException {
-        return service.makeEmergencyCalls(callerId);
+    @PostMapping(path = "call/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<EmergencyCallDTO> makeEmergencyCalls(Principal principal) throws MessagingException, TelegramApiException {
+        return service.makeEmergencyCalls(principal.getName());
     }
 }

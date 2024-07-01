@@ -44,9 +44,9 @@ public class EmergencyCallServiceImpl implements EmergencyCallService {
     private String templateMessage;
 
     @Override
-    public List<EmergencyCallDTO> makeEmergencyCalls(long caller_id) throws MessagingException, TelegramApiException {
-        Caller caller = callerRepository.findById(caller_id).orElseThrow(
-                () -> new IllegalArgumentException("The user with id " + caller_id + " does not exist.")
+    public List<EmergencyCallDTO> makeEmergencyCalls(String username) throws MessagingException, TelegramApiException {
+        Caller caller = callerRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The user with username " + username + " does not exist.")
         );
 
         Set<Receiver> receivers = caller.getReceivers();

@@ -9,5 +9,5 @@ import java.util.List;
 
 @Validated
 public interface EmergencyCallService {
-    List<EmergencyCallDTO> makeEmergencyCalls(long caller_id) throws MessagingException, TelegramApiException;
+    List<EmergencyCallDTO> makeEmergencyCalls(String username) throws MessagingException, TelegramApiException;
 }

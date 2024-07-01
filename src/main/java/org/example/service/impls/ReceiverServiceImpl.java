@@ -17,7 +17,7 @@ import org.example.util.mappers.ReceiverMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -34,49 +34,54 @@ public class ReceiverServiceImpl implements ReceiverService {
 
     @Override
     @Transactional
-    public ReceiverDTO create(ReceiverCreateDTO dto) {
+    public ReceiverDTO create(String username, ReceiverCreateDTO dto) {
 
         String email = validateEmailFormat(dto.getEmail());
         String telegramUsername = validateTelegramUsername(dto.getTelegramUsername());
 
-        if (email == null && telegramUsername == null) {
-            throw new IllegalArgumentException("To create binding, you need to specify person email or/and telegram username.");
-        } else {
-            Caller caller = callerRepository.findById(dto.getCallerId()).orElseThrow(
-                    () -> new IllegalArgumentException("The user with id " + dto.getCallerId() + " does not exist.")
+        Caller caller = callerRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The user with username " + username + " does not exist.")
+        );
+        TelegramUser user = null;
+        if (telegramUsername != null) {
+            user = telegramUserRepository.findByUsername(telegramUsername).orElseThrow(
+                    () -> new IllegalArgumentException("The telegram user with username " + telegramUsername + " does not exist.")
             );
-
-            TelegramUser tgUser = null;
-
-            if (telegramUsername != null) {
-                tgUser = telegramUserRepository.findByUsername(telegramUsername).orElseThrow(
-                        () -> new IllegalArgumentException("The telegram user with username " + telegramUsername + " does not exist.")
-                );
-            }
-
-            Receiver entity = new Receiver(
-                    caller,
-                    dto.getName(),
-                    email,
-                    tgUser);
-
-            entity = repository.save(entity);
-
-            return mapper.receiverToReceiverDto(entity);
         }
+
+        checkIfReceiverDoesNotExist(dto.getName(), email, user == null ? null : user.getChatId(), caller.getId());
+
+        Receiver entity = new Receiver(
+                caller,
+                dto.getName(),
+                email,
+                user);
+
+        entity = repository.save(entity);
+
+        return mapper.receiverToReceiverDto(entity);
+    }
+
+    @Override
+    public List<ReceiverDTO> findAllByCallerUsername(String username) {
+        Caller caller = callerRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The caller with username " + username + " does not exist.")
+        );
+
+        return repository.findByCallerId(caller.getId()).stream().map(mapper::receiverToReceiverDto).toList();
     }
 
     @Override
     @Transactional
-    public ReceiverDTO updateById(long id, ReceiverUpdateDTO dto) throws AccessDeniedException {
+    public ReceiverDTO updateByUsername(String username, ReceiverUpdateDTO dto) {
 
-        Receiver receiver = repository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("The receiver with id " + id + " does not exist.")
+        Caller caller = callerRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("The caller with username " + username + " does not exist.")
         );
 
-        if (receiver.getCaller().getId() != dto.getCallerId()) {
-            throw new AccessDeniedException("You are not allowed to update not yours receivers.");
-        }
+        Receiver receiver = repository.findOneByCallerIdAndName(caller.getId(), dto.getName()).orElseThrow(
+                () -> new IllegalArgumentException("No such receiver found with caller id " + caller.getId() + " and receiver name " + dto.getName() + ".")
+        );
 
         String tgUsername = validateTelegramUsername(dto.getTelegramUsername());
         if (tgUsername != null) {
@@ -116,5 +121,23 @@ public class ReceiverServiceImpl implements ReceiverService {
         if (Pattern.matches(emailRegex, email))
             return email;
         throw new ValidationException("Email is invalid");
+    }
+
+    private void checkIfReceiverDoesNotExist(String name, String email, Long tgId, long callerId) {
+        if (email != null) {
+            if (tgId != null) {
+                if (repository.findCallersReceiverWithEmailAndTelegram(name, email, tgId, callerId).isPresent())
+                    throw new IllegalArgumentException("Please, specify receiver with unique name/email/telegram params.");
+            } else {
+                if (repository.findCallersReceiverWithEmail(name, email, callerId).isPresent())
+                    throw new IllegalArgumentException("Please, specify receiver with unique name/email params.");
+            }
+        } else if (tgId != null) {
+            if (repository.findCallersReceiverWithTelegram(name, tgId, callerId).isPresent()) {
+                throw new IllegalArgumentException("Please, specify receiver with unique name/telegram params.");
+            }
+        } else {
+            throw new IllegalArgumentException("To create binding, you need to specify person email or/and telegram username.");
+        }
     }
 }
